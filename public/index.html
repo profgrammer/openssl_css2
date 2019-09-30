@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>OpenSSL - Sign and verify certificates</title>
+</head>
+<body>
+    <form action="">
+        <h3>Sign</h3>
+        <input type="file" name="" id="signin" accept=".txt">
+        <br><br>
+        <button id="signbtn">Hash document</button>
+    </form>
+
+    <form action="">
+        <h3>Verify</h3>
+        <input type="file" name="" id="verifyin" accept=".json">
+        <br><br>
+        <button id="verifybtn">Verify document</button>
+    </form>
+    <script>
+        var signfile = document.querySelector('#signin');
+        var signbtn = document.querySelector('#signbtn');
+        signbtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append('file', signfile.files[0]);
+            fetch('/sign', {
+                method: 'post',
+                body: fd
+            }).then(result => window.location.href = '/download');
+        })
+
+        var verifyfile = document.querySelector('#verifyin');
+        var verifybtn = document.querySelector('#verifybtn');
+        verifybtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            var fd = new FormData();
+            fd.append('file', verifyfile.files[0]);
+            fetch('/verify', {
+                method: 'post',
+                body: fd
+            }).then(result => result.json()).then(json => {
+                if(json.verified) alert('The file is verified.');
+                else alert('The file is not verified');
+            });
+        })
+    </script>
+</body>
+</html>
